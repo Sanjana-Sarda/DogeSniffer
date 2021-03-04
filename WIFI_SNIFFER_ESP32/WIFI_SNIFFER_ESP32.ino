@@ -9,11 +9,11 @@
 
 #define LED_GPIO_PIN                     5
 #define WIFI_CHANNEL_SWITCH_INTERVAL  (500)
-#define WIFI_CHANNEL_MAX               (13)
+#define WIFI_CHANNEL_MAX               (11)
 
 uint8_t level = 0, channel = 1;
 
-static wifi_country_t wifi_country = {.cc="CN", .schan = 1, .nchan = 13}; //Most recent esp32 library struct
+static wifi_country_t wifi_country = {.cc="US", .schan = 1, .nchan = 11}; //Most recent esp32 library struct
 
 typedef struct {
   unsigned frame_ctrl:16;
@@ -23,6 +23,7 @@ typedef struct {
   uint8_t addr3[6]; /* filtering address */
   unsigned sequence_ctrl:16;
   uint8_t addr4[6]; /* optional */
+  uint8_t stuff[6];
 } wifi_ieee80211_mac_hdr_t;
 
 typedef struct {
@@ -75,15 +76,20 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
 {
   //if (type != WIFI_PKT_MGMT)
     //return;
+  
 
   const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *)buff;
   const wifi_ieee80211_packet_t *ipkt = (wifi_ieee80211_packet_t *)ppkt->payload;
   const wifi_ieee80211_mac_hdr_t *hdr = &ipkt->hdr;
 
+  
   printf("PACKET TYPE=%s, CHAN=%02d, RSSI=%02d,"
     " ADDR1=%02x:%02x:%02x:%02x:%02x:%02x,"
     " ADDR2=%02x:%02x:%02x:%02x:%02x:%02x,"
-    " ADDR3=%02x:%02x:%02x:%02x:%02x:%02x\n",
+    " ADDR3=%02x:%02x:%02x:%02x:%02x:%02x,"
+    "SC=%02x:%02x,"
+    "ADDR4=%02x:%02x:%02x:%02x:%02x:%02x,"
+    "STUFF=%02x:%02x:%02x:%02x:%02x:%02x\n",
     wifi_sniffer_packet_type2str(type),
     ppkt->rx_ctrl.channel,
     ppkt->rx_ctrl.rssi,
@@ -95,7 +101,14 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
     hdr->addr2[3],hdr->addr2[4],hdr->addr2[5],
     /* ADDR3 */
     hdr->addr3[0],hdr->addr3[1],hdr->addr3[2],
-    hdr->addr3[3],hdr->addr3[4],hdr->addr3[5]
+    hdr->addr3[3],hdr->addr3[4],hdr->addr3[5],
+    hdr->sequence_ctrl, hdr->sequence_ctrl,
+    /* ADDR4 */
+    hdr->addr4[0],hdr->addr4[1],hdr->addr4[2],
+    hdr->addr4[3],hdr->addr4[4],hdr->addr4[5], 
+    /*STUFF*/
+    hdr->stuff[0],hdr->stuff[1],hdr->stuff[2],
+    hdr->stuff[3],hdr->stuff[4],hdr->stuff[5]
   );
 }
 
