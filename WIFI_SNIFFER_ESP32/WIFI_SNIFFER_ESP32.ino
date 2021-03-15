@@ -21,7 +21,7 @@ typedef struct {
   uint8_t addr1[6]; /* receiver address */
   uint8_t addr2[6]; /* sender address */
   uint8_t addr3[6]; /* filtering address */
-  unsigned sequence_ctrl:16;
+  uint8_t sequence_ctrl[2];
   uint8_t addr4[6]; /* optional */
   uint8_t stuff[6];
 } wifi_ieee80211_mac_hdr_t;
@@ -81,7 +81,6 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
   const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *)buff;
   const wifi_ieee80211_packet_t *ipkt = (wifi_ieee80211_packet_t *)ppkt->payload;
   const wifi_ieee80211_mac_hdr_t *hdr = &ipkt->hdr;
-
   
   printf("PACKET TYPE=%s, CHAN=%02d, RSSI=%02d,"
     " ADDR1=%02x:%02x:%02x:%02x:%02x:%02x,"
@@ -102,7 +101,7 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
     /* ADDR3 */
     hdr->addr3[0],hdr->addr3[1],hdr->addr3[2],
     hdr->addr3[3],hdr->addr3[4],hdr->addr3[5],
-    hdr->sequence_ctrl, hdr->sequence_ctrl,
+    hdr->sequence_ctrl[0], hdr->sequence_ctrl[1],
     /* ADDR4 */
     hdr->addr4[0],hdr->addr4[1],hdr->addr4[2],
     hdr->addr4[3],hdr->addr4[4],hdr->addr4[5], 
