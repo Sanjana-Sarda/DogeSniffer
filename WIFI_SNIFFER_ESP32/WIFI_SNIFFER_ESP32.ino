@@ -7,7 +7,6 @@
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 
-#define LED_GPIO_PIN                     5
 #define WIFI_CHANNEL_SWITCH_INTERVAL  (500)
 #define WIFI_CHANNEL_MAX               (11)
 
@@ -115,20 +114,15 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
 void setup() {
   // initialize digital pin 5 as an output.
   Serial.begin(115200);
+  while(!Serial);
   delay(10);
   wifi_sniffer_init();
-  pinMode(LED_GPIO_PIN, OUTPUT);
 }
 
 // the loop function runs over and over again forever
 void loop() {
   //Serial.print("inside loop");
   delay(1000); // wait for a second
-  
-  if (digitalRead(LED_GPIO_PIN) == LOW)
-    digitalWrite(LED_GPIO_PIN, HIGH);
-  else
-    digitalWrite(LED_GPIO_PIN, LOW);
   vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
   wifi_sniffer_set_channel(channel);
   channel = (channel % WIFI_CHANNEL_MAX) + 1;
