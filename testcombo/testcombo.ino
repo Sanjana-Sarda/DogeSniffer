@@ -44,7 +44,7 @@ class MyClientCallback : public BLEClientCallbacks {
 /**
  * Scan for BLE servers and find the first one that advertises the service we are looking for.
  */
-class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
+class scanAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
  /**
    * Called for each advertising BLE server.
    */
@@ -53,9 +53,19 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     Serial.println(advertisedDevice.toString().c_str());
     Serial.println(advertisedDevice.getName().c_str());
     //send device name back to python ^^ ->only add unique names (do this on python side)
+  } // onResult
+}; // MyAdvertisedDeviceCallbacks
 
+/**
+ * Scan for BLE servers and find the first one that advertises the service we are looking for.
+ */
+class findAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
+ /**
+   * Called for each advertising BLE server.
+   */
+  void onResult(BLEAdvertisedDevice advertisedDevice) {
     // We have found a device, let us now see if it contains the service we are looking for.
-    if (advertisedDevice.getName()=="Minger_H6001_0751") {//replace with 
+    if (advertisedDevice.getName().find("Minger_H6001")!=-1) {//replace with
       BLEDevice::getScan()->stop();
       myDevice = new BLEAdvertisedDevice(advertisedDevice);
       doConnect = true;
@@ -93,7 +103,20 @@ void scanBLE(){
   // have detected a new device.  Specify that we want active scanning and start the
   // scan to run for 5 seconds.
   BLEScan* pBLEScan = BLEDevice::getScan();
-  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
+  pBLEScan->setAdvertisedDeviceCallbacks(new scanAdvertisedDeviceCallbacks());
+  pBLEScan->setInterval(1349);
+  pBLEScan->setWindow(449);
+  pBLEScan->setActiveScan(true);
+  pBLEScan->start(5, false);
+}
+
+void findBLE(){
+  BLEDevice::init("");
+  // Retrieve a Scanner and set the callback we want to use to be informed when we
+  // have detected a new device.  Specify that we want active scanning and start the
+  // scan to run for 5 seconds.
+  BLEScan* pBLEScan = BLEDevice::getScan();
+  pBLEScan->setAdvertisedDeviceCallbacks(new findAdvertisedDeviceCallbacks());
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
@@ -167,6 +190,7 @@ void setup() {
   while(!Serial);
   getCoords();
   scanBLE();
+  findBLE();
   writeBLE();
 }
 
