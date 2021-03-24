@@ -11,9 +11,9 @@
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 
-const char *SSID = "SpectrumSetup-EF";
-const char *PWD = "statuedegree418";
-const char *googleApiKey = "AIzaSyCeC3d0RMOH9OPdVTJXh_UPnZYA4IUrh8Q";
+const char *SSID = "PUT SSID HERE";
+const char *PWD = "PUT PASSWORD HERE";
+const char *googleApiKey = "PUT GOOGLE API KEY HERE";
 
 WifiLocation location(googleApiKey);
 
