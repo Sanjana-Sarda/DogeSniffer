@@ -4,4 +4,4 @@ A standalone IoT device designed for aspring hackers (by aspiring hackers 😎) 
 
 ## System Diagram ⚙️
 
-
+<img src="/img/system.png" width="550" height="397">
