@@ -7,3 +7,5 @@ A standalone IoT device designed for aspring hackers (by aspiring hackers 😎) 
 <img src="/img/system.png" width="550" height="397">
 
 ## GUI Layout 🗺️
+
+<img src="/img/gui.png" width="527" height="494">
