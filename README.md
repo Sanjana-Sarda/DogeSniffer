@@ -1,6 +1,6 @@
 # DogeSniffer 🐩👃
 
-A standalone IoT device with BLE and Wi-Fi scanning capabilities! Users can also connect and write to scanned BLE devices remotely through an easy-to-use GUI on their personal device.
+A standalone IoT device with BLE and Wi-Fi scanning capabilities! Users can also connect and write to scanned BLE devices remotely through an easy-to-use GUI on their personal devices.
 
 ## System Diagram ⚙️
 
